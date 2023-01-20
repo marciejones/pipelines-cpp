@@ -11,23 +11,23 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildPlatform: 'x86, x64'
+  buildConfiguration: 'debug, release'
 
 steps:
-- task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
 
 - task: VSBuild@1
   inputs:
-    solution: '$(solution)'
+    solution: 'cpp-sample.sln'
     platform: 'x86, x64'
     configuration: 'debug, release'
-
-- task: VSTest@2
+- task: CopyFiles@2
   inputs:
-    platform: 'x86, x64'
-    configuration: 'debug, release'
+    SourceFolder: 'contents: ''**\release\**\?(*.exe|*.dll|*.pdb)'''
+    Contents: '**'
+    TargetFolder: 'artifacts'
+    CleanTargetFolder: true
+    OverWrite: true
+    retryCount: '3'
+    delayBetweenRetries: '1000'
